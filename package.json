@@ -5,11 +5,17 @@
     "react-dom": "^18.3.1",
     "react-scripts": "^5.0.1"
   },
+  "devDependencies": {
+    "yarn": "^1.22.22"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "check-updates": "npx yarn outdated",
+    "update-deps": "npx yarn upgrade-interactive --latest",
+    "clean-install": "rm -rf node_modules && npx yarn install"
   },
   "browserslist": {
     "production": [
