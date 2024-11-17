@@ -1,17 +1,22 @@
 # Dependencies
 /node_modules
+/.pnp
+.pnp.js
 
-# Production build
+# Testing
+/coverage
+
+# Production
 /build
 
-# Misc
-.DS_Store
+# Environment files
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Logs
+# Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -19,20 +24,13 @@ yarn-error.log*
 # Editor directories and files
 .idea
 .vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+*.swp
+*.swo
+.DS_Store
+*.pem
 
-# Cache
-.cache
-.eslintcache
-
-# Yarn
-yarn-error.log
-.pnp/
-.pnp.js
+# Local Netlify folder
+.netlify
 
 # Optional npm cache directory
 .npm
@@ -49,17 +47,7 @@ yarn-error.log
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
-
-# macOS
-.DS_Store
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
+# Misc
+*.log
+.cache/
+dist/

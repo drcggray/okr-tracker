@@ -5,8 +5,7 @@ import QuarterlyGoals from './components/QuarterlyGoals';
 import MonthlyGoals from './components/MonthlyGoals';
 import WeeklyGoals from './components/WeeklyGoals';
 import DailyGoals from './components/DailyGoals';
-import WorkTimer from './components/WorkTimer';
-import { categories, loadGoals, saveGoals, initializeGoals } from './utils/goalUtils';
+import { categories, initializeGoals } from './utils/goalUtils';
 import useLocalStorage from './hooks/useLocalStorage';
 import useDarkMode from './hooks/useDarkMode';
 
@@ -17,21 +16,14 @@ const App = () => {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedWeek, setSelectedWeek] = useState(null);
   const [dailyGoals, setDailyGoals] = useLocalStorage('dailyGoals', Array(14).fill(''));
-  
-  const [remainingTime, setRemainingTime] = useState(0);
-  const [selectedDuration, setSelectedDuration] = useState(15);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
-  
   const [darkMode, toggleDarkMode] = useDarkMode();
 
   useEffect(() => {
-    const loadedGoals = loadGoals();
-    setGoals(loadedGoals);
-  }, [setGoals]);
-
-  useEffect(() => {
-    saveGoals(goals);
-  }, [goals]);
+    console.log('Goals state updated:', goals);
+    if (selectedQuarter !== null && selectedMonth !== null) {
+      console.log('Current weekly goals:', goals[currentCategory]?.quarterly[selectedQuarter]?.monthly[selectedMonth]?.weekly);
+    }
+  }, [goals, currentCategory, selectedQuarter, selectedMonth]);
 
   const updateGoal = useCallback((level, index, value, dayIndex, goalIndex) => {
     setGoals(prevGoals => {
@@ -80,12 +72,15 @@ const App = () => {
           return prevGoals;
       }
 
+      console.log(`Updated ${level} goal:`, newGoals);
       return newGoals;
     });
   }, [currentCategory, selectedQuarter, selectedMonth, selectedWeek, setGoals]);
 
   const toggleCompletion = useCallback((level, indices) => {
+    console.log(`Toggling completion for ${level}:`, indices);
     setGoals(prevGoals => {
+      console.log('Previous goals:', prevGoals);
       const newGoals = { ...prevGoals };
       let target = newGoals[currentCategory];
 
@@ -115,11 +110,10 @@ const App = () => {
           }
           break;
         case 'daily':
-          if (target.quarterly[indices[0]]?.monthly[indices[1]]?.weekly[indices[2]]?.dailyGoals[indices[3]][indices[4]]) {
-            const currentGoal = target.quarterly[indices[0]].monthly[indices[1]].weekly[indices[2]].dailyGoals[indices[3]][indices[4]];
-            target.quarterly[indices[0]].monthly[indices[1]].weekly[indices[2]].dailyGoals[indices[3]][indices[4]] = {
-              ...currentGoal,
-              completed: !currentGoal.completed
+          if (target.quarterly[indices[0]]?.monthly[indices[1]]?.weekly[indices[2]]?.dailyGoals[indices[3]]) {
+            target.quarterly[indices[0]].monthly[indices[1]].weekly[indices[2]].dailyGoals[indices[3]] = {
+              ...target.quarterly[indices[0]].monthly[indices[1]].weekly[indices[2]].dailyGoals[indices[3]],
+              completed: !target.quarterly[indices[0]].monthly[indices[1]].weekly[indices[2]].dailyGoals[indices[3]].completed
             };
           }
           break;
@@ -128,6 +122,7 @@ const App = () => {
           return prevGoals;
       }
 
+      console.log('Updated goals:', newGoals);
       return newGoals;
     });
   }, [currentCategory, setGoals]);
@@ -142,12 +137,14 @@ const App = () => {
     ),
     annualGoal: (
       <AnnualGoal
+        key={`annual-${currentCategory}`}
         annualGoal={goals[currentCategory]?.annual || ''}
         updateGoal={(value) => updateGoal('annual', null, value)}
       />
     ),
     quarterlyGoals: (
       <QuarterlyGoals
+        key={`quarterly-${currentCategory}`}
         goals={goals[currentCategory]?.quarterly || []}
         updateGoal={(index, value) => updateGoal('quarterly', index, value)}
         toggleCompletion={(index) => toggleCompletion('quarterly', [index])}
@@ -157,6 +154,7 @@ const App = () => {
     ),
     monthlyGoals: selectedQuarter !== null && (
       <MonthlyGoals
+        key={`monthly-${currentCategory}-${selectedQuarter}`}
         goals={goals[currentCategory]?.quarterly[selectedQuarter]?.monthly || []}
         updateGoal={(index, value) => updateGoal('monthly', index, value)}
         toggleCompletion={(index) => toggleCompletion('monthly', [selectedQuarter, index])}
@@ -167,6 +165,7 @@ const App = () => {
     ),
     weeklyGoals: selectedQuarter !== null && selectedMonth !== null && (
       <WeeklyGoals
+        key={`weekly-${currentCategory}-${selectedQuarter}-${selectedMonth}`}
         weeklyGoals={goals[currentCategory]?.quarterly[selectedQuarter]?.monthly[selectedMonth]?.weekly || []}
         updateGoal={(index, value) => updateGoal('weekly', index, value)}
         toggleCompletion={(index) => toggleCompletion('weekly', [selectedQuarter, selectedMonth, index])}
@@ -174,35 +173,20 @@ const App = () => {
         setSelectedWeek={setSelectedWeek}
         selectedQuarter={selectedQuarter}
         selectedMonth={selectedMonth}
-        updateDailyGoal={(weekIndex, dayIndex, goalIndex, value) => 
-          updateGoal('daily', weekIndex, value, dayIndex, goalIndex)}
-        toggleDailyGoalCompletion={(weekIndex, dayIndex, goalIndex) => 
-          toggleCompletion('daily', [selectedQuarter, selectedMonth, weekIndex, dayIndex, goalIndex])}
       />
     ),
     dailyGoals: (
       <DailyGoals
+        key={`daily-${JSON.stringify(dailyGoals)}`}
         goals={dailyGoals}
         setGoals={setDailyGoals}
       />
     ),
-    workTimer: (
-      <WorkTimer
-        remainingTime={remainingTime}
-        setRemainingTime={setRemainingTime}
-        selectedDuration={selectedDuration}
-        setSelectedDuration={setSelectedDuration}
-        isTimerRunning={isTimerRunning}
-        setIsTimerRunning={setIsTimerRunning}
-      />
-    )
   }), [
     goals, currentCategory, updateGoal, toggleCompletion,
     selectedQuarter, selectedMonth, selectedWeek,
     dailyGoals, setDailyGoals,
-    remainingTime, setRemainingTime,
-    selectedDuration, setSelectedDuration,
-    isTimerRunning, setIsTimerRunning
+    darkMode,
   ]);
 
   return (
@@ -226,8 +210,6 @@ const App = () => {
         {memoizedComponents.weeklyGoals}
         {memoizedComponents.dailyGoals}
       </div>
-
-      {memoizedComponents.workTimer}
     </div>
   );
 };

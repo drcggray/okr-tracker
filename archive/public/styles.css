@@ -1,0 +1,136 @@
+:root {
+    --background-light: #f0f0f0;
+    --text-light: #333;
+    --container-light: white;
+    --input-light: white;
+    --button-light: #4a90e2;
+    --button-hover-light: #3a7bc8;
+
+    --background-dark: #1a1a1a;
+    --text-dark: #f0f0f0;
+    --container-dark: #2c2c2c;
+    --input-dark: #3a3a3a;
+    --button-dark: #444;
+    --button-hover-dark: #555;
+
+    --transition-speed: 0.3s;
+}
+
+/* Base styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-light);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.container {
+    background-color: var(--container-light);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+input[type="text"],
+textarea {
+    background-color: var(--input-light);
+    color: var(--text-light);
+    border: 1px solid #ccc;
+    transition: background-color var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed);
+}
+
+button {
+    background-color: var(--button-light);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+}
+
+button:hover {
+    background-color: var(--button-hover-light);
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    background-color: var(--background-dark);
+    color: var(--text-dark);
+}
+
+.dark-mode .container {
+    background-color: var(--container-dark);
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode input[type="text"],
+.dark-mode textarea {
+    background-color: var(--input-dark);
+    color: var(--text-dark);
+    border-color: #555;
+}
+
+.dark-mode button {
+    background-color: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.dark-mode button:hover {
+    background-color: var(--button-hover-dark);
+}
+
+/* Daily Goals styles */
+.day-label {
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.day-label.selected {
+    background-color: #2196f3;
+    color: white;
+}
+
+.dark-mode .day-label.selected {
+    background-color: #1565c0;
+}
+
+.day-label.completed {
+    background-color: #4caf50;
+    color: white;
+}
+
+.dark-mode .day-label.completed {
+    background-color: #2e7d32;
+}
+
+.day-label.fully-filled {
+    background-color: #bbdefb;
+    color: var(--text-light);
+}
+
+.dark-mode .day-label.fully-filled {
+    background-color: #1565c0;
+    color: var(--text-dark);
+}
+
+.day-label.partially-filled {
+    background: linear-gradient(to right, #bbdefb 50%, var(--background-light) 50%);
+    color: var(--text-light);
+}
+
+.dark-mode .day-label.partially-filled {
+    background: linear-gradient(to right, #1565c0 50%, var(--container-dark) 50%);
+    color: var(--text-dark);
+}
+
+.day-label.empty {
+    background-color: #e0e0e0;
+    color: var(--text-light);
+}
+
+.dark-mode .day-label.empty {
+    background-color: #424242;
+    color: var(--text-dark);
+}
+
+/* Add more custom styles as needed */

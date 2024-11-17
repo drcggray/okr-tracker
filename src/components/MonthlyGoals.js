@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Check, ChevronUp, ChevronDown } from 'lucide-react';
 
 const MonthlyGoals = ({ goals, updateGoal, toggleCompletion, setSelectedMonth, selectedMonth, selectedQuarter }) => {
@@ -6,6 +6,21 @@ const MonthlyGoals = ({ goals, updateGoal, toggleCompletion, setSelectedMonth, s
 
   const toggleRollUp = () => {
     setIsRolledUp(!isRolledUp);
+  };
+
+  useEffect(() => {
+    console.log('MonthlyGoals component re-rendered');
+  });
+
+  const handleToggleCompletion = (mIndex) => {
+    console.log(`Toggling completion for month ${mIndex} in quarter ${selectedQuarter}`);
+    
+    // Toggle the completed status directly in the goals array
+    const updatedGoals = [...goals];
+    updatedGoals[mIndex].completed = !updatedGoals[mIndex].completed;
+    
+    // Update the goals state
+    toggleCompletion(updatedGoals);
   };
 
   // Check if goals is defined and is an array
@@ -32,19 +47,19 @@ const MonthlyGoals = ({ goals, updateGoal, toggleCompletion, setSelectedMonth, s
             }`}
           >
             <div className="flex items-center mb-2">
+            <button
+  onClick={() => handleToggleCompletion(mIndex)}
+  className={`p-2 rounded mr-2 ${month.completed ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+>
+  {month.completed ? <Check size={20} /> : <span className="w-5 h-5 block"></span>}
+</button>
               <input
                 type="text"
                 value={month.goal || ''}
                 onChange={(e) => updateGoal(mIndex, e.target.value)}
-                className="flex-grow p-2 border rounded mr-2"
+                className={`flex-grow p-2 border rounded ${month.completed ? 'line-through' : ''}`}
                 placeholder={`Month ${mIndex + 1} goal`}
               />
-              <button
-                onClick={() => toggleCompletion(mIndex)}
-                className={`p-2 rounded ${month.completed ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-              >
-                {month.completed ? <Check size={20} /> : <span className="w-5 h-5 block"></span>}
-              </button>
             </div>
             <button
               onClick={() => setSelectedMonth(mIndex)}

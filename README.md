@@ -1,74 +1,142 @@
 # OKR Tracker
 
-This is a React-based OKR (Objectives and Key Results) Tracker application. It allows users to set and track goals at various levels: Annual, Quarterly, Monthly, Weekly, and Daily.
+A React-based application for tracking Objectives and Key Results (OKRs) across different time periods and life categories.
 
 ## Features
 
-- Set and track goals for multiple categories
+- Track goals across multiple categories (Finance, Career, Health, etc.)
+- Hierarchical goal structure (Annual → Quarterly → Monthly → Weekly → Daily)
 - Dark mode support
-- Work timer functionality
-- Data persistence using localStorage
+- Work timer for productivity
+- Persistent storage using localStorage
+- Responsive design
+- Performance optimized with React.lazy loading
 
-## Running the app locally
+## Tech Stack
 
-1. Make sure you have Node.js installed on your machine.
-2. Clone this repository to your local machine.
-3. Navigate to the project directory in your terminal.
-4. Run `npm install` to install the required dependencies.
-5. Run `npm start` to start the development server.
-6. Open your browser and go to `http://localhost:3000` to view the app.
+- React 18
+- Context API for state management
+- TailwindCSS for styling
+- React Error Boundary for error handling
+- Web Vitals for performance monitoring
 
-## Deploying to GitHub and Netlify
+## Getting Started
 
-1. Create a new repository on GitHub.
-2. Initialize git in your local project folder (if not already done):
-   ```
-   git init
-   ```
-3. Add all files to git:
-   ```
-   git add .
-   ```
-4. Commit the files:
-   ```
-   git commit -m "Initial commit"
-   ```
-5. Add your GitHub repository as a remote:
-   ```
-   git remote add origin https://github.com/yourusername/your-repo-name.git
-   ```
-6. Push your code to GitHub:
-   ```
-   git push -u origin main
-   ```
-7. Log in to your Netlify account and click "New site from Git".
-8. Choose GitHub as your Git provider and select your repository.
-9. In the deploy settings, the build command and publish directory should be automatically detected from the netlify.toml file.
-10. Click "Deploy site".
+### Prerequisites
 
-Netlify will now automatically deploy your site whenever you push changes to your GitHub repository.
+- Node.js (v18 or higher)
+- npm or yarn
 
-## Technologies Used
+### Installation
 
-- React
-- Tailwind CSS
-- localStorage for data persistence
-- Yarn for package management (installed locally as a dev dependency)
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/okr-tracker.git
+cd okr-tracker
+```
 
-## Scripts
+2. Install dependencies:
+```bash
+yarn install
+# or
+npm install
+```
 
-- `npm start`: Runs the app in development mode
-- `npm run build`: Builds the app for production
-- `npm test`: Runs the test watcher in an interactive mode
-- `npm run eject`: Ejects from create-react-app
-- `npm run check-updates`: Checks for outdated dependencies
-- `npm run update-deps`: Interactively update dependencies
-- `npm run clean-install`: Performs a clean installation of dependencies
+3. Start the development server:
+```bash
+yarn start
+# or
+npm start
+```
+
+The application will be available at `http://localhost:3000`
+
+### Environment Setup
+
+Create the following environment files:
+
+`.env.development`:
+```
+REACT_APP_ENV=development
+REACT_APP_API_URL=http://localhost:3000
+```
+
+`.env.production`:
+```
+REACT_APP_ENV=production
+REACT_APP_API_URL=https://okr-tracker.netlify.app
+```
+
+## Building for Production
+
+```bash
+yarn build
+# or
+npm run build
+```
+
+## Deployment
+
+### Netlify Deployment
+
+1. Push your code to GitHub
+2. Connect your GitHub repository to Netlify
+3. Configure build settings:
+   - Build command: `npm run build`
+   - Publish directory: `build`
+4. Deploy!
+
+The application is configured for continuous deployment through Netlify. Any push to the main branch will trigger a new deployment.
+
+### Google Authentication Setup
+
+To enable Google login:
+
+1. Create a project in Google Cloud Console
+2. Enable Google Sign-In API
+3. Create OAuth 2.0 credentials
+4. Add authorized JavaScript origins and redirect URIs
+5. Update environment variables with your Google Client ID
+
+## Development
+
+### Available Scripts
+
+- `yarn start`: Start development server
+- `yarn build`: Build for production
+- `yarn test`: Run tests
+- `yarn lint`: Run ESLint
+- `yarn lint:fix`: Fix ESLint issues
+- `yarn format`: Format code with Prettier
+- `yarn analyze`: Analyze bundle size
+
+### Project Structure
+
+```
+src/
+  ├── components/        # React components
+  ├── context/          # React Context providers
+  ├── hooks/            # Custom React hooks
+  ├── utils/            # Utility functions
+  ├── types/            # TypeScript types (if used)
+  ├── App.js            # Main App component
+  └── index.js          # Application entry point
+```
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- React team for the amazing framework
+- Netlify for hosting
+- Contributors and users of the application

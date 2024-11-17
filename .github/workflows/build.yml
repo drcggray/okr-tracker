@@ -1,5 +1,4 @@
-name: Build and Test
-
+name: Build and Deploy
 on:
   push:
     branches: [ main ]
@@ -7,25 +6,76 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x]
 
     steps:
     - uses: actions/checkout@v3
-    - name: Use Node.js
+    
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
-        node-version: '16.x'
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+    
     - name: Install dependencies
-      run: npm ci
-    - name: Check for outdated dependencies
-      run: npm run check-updates
+      run: yarn install --frozen-lockfile
+    
+    - name: Lint
+      run: yarn lint
+    
     - name: Build
-      run: npm run build
-    - name: Test
-      run: npm test
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v3
+      run: yarn build
+      env:
+        CI: true
+        REACT_APP_ENV: production
+        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+    
+    - name: Deploy to Netlify
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      uses: nwtgck/actions-netlify@v2.0
       with:
-        name: build
-        path: build
+        publish-dir: './build'
+        production-branch: main
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: "Deploy from GitHub Actions"
+        enable-pull-request-comment: true
+        enable-commit-comment: true
+        overwrites-pull-request-comment: true
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      timeout-minutes: 10
+
+  security:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Run security scan
+      uses: snyk/actions/node@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --severity-threshold=high
+
+  notify:
+    needs: [build-and-test, security]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Notify about build status
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: always()
